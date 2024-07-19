@@ -63,6 +63,7 @@ while True:
         merenje = np.array([[np.float32(x)], [np.float32(y)]])
         kalman.correct(merenje)
         prediction = kalman.predict()
+        
 
         #tracking
         pred_x, pred_y = prediction[0], prediction[1]
