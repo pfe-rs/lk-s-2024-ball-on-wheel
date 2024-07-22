@@ -1,30 +1,55 @@
 #include <Encoder.h>
 
-Encoder Ludi(2,3);
+Encoder enc(2,3);
 int speedpin=7;
 int directionpin1=6;
 int directionpin2=5;
 
-long pozicijaLudi  = -999, noviLudi;
-int start=0, f=1;
-float ugao, jedinicni_ugao=(float)360/2400,ugaona_brzina, volti=6*21.25;
+long stara_pozicija=-999,nova_pozicija;
+float volti=0.25*21.25;
+bool f=true;
+unsigned long puls;
 
-void setup() {
+void setup(){
   Serial.begin(115200);
 
   pinMode(speedpin,OUTPUT);
-  pinMode(directionpin1,OUTPUT);x 
+  pinMode(directionpin1,OUTPUT);
   pinMode(directionpin2,OUTPUT);
-  analogWrite(speedpin,127);  //na motoru koji smo koristili 21.25 je otprilike 1 volt
+  analogWrite(speedpin,150);  //na motoru koji smo koristili 21.25 je otprilike 1 volt
   digitalWrite(directionpin2,HIGH);
   digitalWrite(directionpin1,LOW);
 }
 
-void reset (Encoder Ludi){
+void loop(){
+  if(f){
+    Serial.println(volti);
+    f=false;
+}
+  nova_pozicija=enc.read();
+  puls=2*pulseIn(2,HIGH);
+  if(nova_pozicija!=stara_pozicija){
+    Serial.print(puls);
+    Serial.print(",");
+    Serial.println(nova_pozicija);
+    stara_pozicija=nova_pozicija;
+  }
+}
+/*long stara_pozicija = -999, nova_pozicija;
+float jedinicni_ugao=(float)360/2400, volti=0.25*21.25,ugao;
+unsigned long puls,puls1,puls2;
+
+float merenje_ugla(Encoder enc){
+  stara_pozicija = enc.read();
+  float u=fmod(jedinicni_ugao*nova_pozicija,360.0);
+  return u;
+}
+
+void reset (Encoder enc){
   if (Serial.available()) {
     Serial.read();
     Serial.println("Reset");
-    Ludi.write(0);
+    enc.write(0);
   }
 }
 
@@ -32,36 +57,21 @@ void stampaj(float x){
   Serial.print(x);
 }
 
-float merenje_ugla(Encoder Ludi){
-  noviLudi = Ludi.read();
-  float u=fmod(jedinicni_ugao*noviLudi,360.0);
-  return u;
-}
-
-float merenje_ugaone_brzine(int start){
-    int tr= micros();
-    int vreme=tr-start;
-    float ub=(float)abs(noviLudi*jedinicni_ugao-pozicijaLudi*jedinicni_ugao)/vreme*1000000;
-    start=tr;
-    return ub;
-}
-
-void loop() {
-  if (f){
-    stampaj(volti/21.25);
-    f--;
+void loop(){ 
+  nova_pozicija = enc.read();
+  ugao=jedinicni_ugao*nova_pozicija;
+  puls=2*pulseIn(2,HIGH);
+  if (nova_pozicija != stara_pozicija) {
+    Serial.println(puls);
+    Serial.print(ugao);
+    Serial.print(",");
+    if(puls>0){
+      double period = puls * 1e-6*600; // Convert microseconds to seconds
+      double frequency = 1.0 / period; // Frequency in Hz
+      double ugaona_brzina = frequency*60;
+      Serial.println(ugaona_brzina);
+    }
+    stara_pozicija=nova_pozicija;
   }
-  ugao=merenje_ugla(Ludi);
-  if (noviLudi != pozicijaLudi) {
-    //stampaj(ugao);
-    //Serial.print(" , ");
-    ugaona_brzina=merenje_ugaone_brzine(start);
-    stampaj(ugaona_brzina);
-    Serial.println();
-    pozicijaLudi = noviLudi;
-  }
-  reset(Ludi);
-  Serial.flush();
-  //delay(200);
-}
-
+  reset(enc);
+}*/
