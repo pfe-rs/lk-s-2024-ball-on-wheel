@@ -21,16 +21,20 @@ class Enkoder:
         splitPacket=dataPacket.split(",")
         self.puls=int(splitPacket[0])   #mozda bude problem za vece brojeve jer je u c-u unsigned long
         self.poz=int(splitPacket[1])
+    def citaj_napon(self,arduino):
+        self.napon=arduino.readline()
+        self.napon=str(self.napon, 'utf-8')
+        self.napon=self.napon.strip('\r\n')
+        return self.napon
+
 
 time.sleep(1)
 
-napon=arduino.readline()
-napon=str(napon, 'utf-8')
-napon=napon.strip('\r\n')
+enkoder=Enkoder()    
+napon=enkoder.citaj_napon(arduino)
 print("napon= ",napon)
 
 while True:
-    enkoder=Enkoder()    
     while (arduino.inWaiting()==0):
         pass
     enkoder.citaj_podatke(arduino)
