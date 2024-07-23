@@ -9,6 +9,7 @@ long stara_pozicija=-999,nova_pozicija;
 float volti=0.25*21.25;
 bool f=true;
 unsigned long puls;
+int x;
 
 void setup(){
   Serial.begin(115200);
@@ -16,12 +17,16 @@ void setup(){
   pinMode(speedpin,OUTPUT);
   pinMode(directionpin1,OUTPUT);
   pinMode(directionpin2,OUTPUT);
-  analogWrite(speedpin,150);  //na motoru koji smo koristili 21.25 je otprilike 1 volt
+  analogWrite(speedpin,0);  //na motoru koji smo koristili 21.25 je otprilike 1 volt
   digitalWrite(directionpin2,HIGH);
   digitalWrite(directionpin1,LOW);
 }
 
 void loop(){
+  while (!Serial.available()){
+	  x = Serial.readString().toInt(); 
+    analogWrite(speedpin,x);
+  }
   if(f){
     Serial.println(volti);
     f=false;

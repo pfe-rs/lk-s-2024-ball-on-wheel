@@ -3,7 +3,6 @@ import time
  
 arduino = serial.Serial('/dev/ttyACM0',115200)
 jedinicni_ugao=360/2400
-
 class Enkoder:
     def odredjivanje_ugla(self):
         self.ugao=int(jedinicni_ugao*self.poz)%360
@@ -19,7 +18,7 @@ class Enkoder:
         dataPacket=str(dataPacket, 'utf-8')
         dataPacket=dataPacket.strip('\r\n')
         splitPacket=dataPacket.split(",")
-        self.puls=int(splitPacket[0])   #mozda bude problem za vece brojeve jer je u c-u unsigned long
+        self.puls=int(splitPacket[0])  
         self.poz=int(splitPacket[1])
     def citaj_napon(self,arduino):
         self.napon=arduino.readline()
