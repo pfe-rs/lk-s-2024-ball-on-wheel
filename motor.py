@@ -1,19 +1,20 @@
 import serial
 import time
 
-arduino = serial.Serial('/dev/ttyACM0',115200)
+arduino = serial.Serial('/dev/ttyACM1',115200)
 
 class Motor:
-    def __init__(self,napon):
-        self.napon=napon
-    def salji_napon(self,arduino):
-        if 0 <= self.napon <= 255:
-            arduino.write(f"{self.napon}\n".encode())
+    def salji_napon(self,napon,arduino):
+        if 0 <= napon <= 255:
+            arduino.write(f"{napon}\n".encode())
+            time.sleep(0.1)  # Allow some time for the Arduino to process
+            while arduino.in_waiting > 0:
+                arduino.readline()  # Clear the buffer
 
 time.sleep(1)
 
 while True:    
     print("Uneti napon")
     napon=int(input())
-    motor=Motor(napon)
-    motor.salji_napon(arduino)
+    motor=Motor()
+    motor.salji_napon(napon,arduino)
