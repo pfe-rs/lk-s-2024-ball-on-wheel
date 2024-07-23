@@ -33,10 +33,10 @@ void loop(){
 
   analogWrite(speedpin, pwmValue); // Set the motor speed
 
-  if(f){
+  /*if(f){
     Serial.println(volti);
     f=false;
-  }
+  }*/
   nova_pozicija=enc.read();
   puls=2*pulseIn(2,HIGH);
   if(nova_pozicija!=stara_pozicija){
