@@ -10,7 +10,6 @@ matplotlib.use('TkAgg')
 zeljena_ugaona_brzina=210
 zeljena_brzina2 = 255
 
-
 duzina = 10
 neko_vreme = 5
 start_time = time.time()
