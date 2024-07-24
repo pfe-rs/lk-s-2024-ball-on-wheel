@@ -12,10 +12,12 @@ class Motor:
             while arduino.in_waiting > 0:
                 arduino.readline()  # Clear the buffer
 
-"""time.sleep(1)
 
-while True:    
-    print("Uneti napon")
-    napon=int(input())
-    motor=Motor()
-    motor.salji_napon(napon,arduino) """
+if __name__=="__main__":
+    time.sleep(1)
+
+    while True:    
+        print("Uneti napon")
+        napon=int(input())
+        motor=Motor()
+        motor.salji_napon(napon,arduino)
