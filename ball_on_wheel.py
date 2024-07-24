@@ -1,3 +1,4 @@
+
 import serial
 import enkoder_motor
 import motor
@@ -8,10 +9,11 @@ from matplotlib import pyplot as plt
 matplotlib.use('TkAgg')
 
 zeljena_ugaona_brzina=210
-zeljena_brzina2 = 255
+zeljena_brzina2 = 350
 
-duzina = 10
-neko_vreme = 5
+
+duzina = 40
+neko_vreme = 20
 start_time = time.time()
 
 brzina_list = []
@@ -23,14 +25,13 @@ arduino = serial.Serial('/dev/ttyACM0',115200)
 
 enkoder=enkoder_motor.Enkoder()
 motor=motor.Motor()
-
-interval=0.01           #vremenski interval posle kog ce se izvrsiti fja
-prethodno_vreme=time.time()
+#interval=0.01           #vremenski interval posle kog ce se izvrsiti fja
+#prethodno_vreme=time.time()
 
 while time.time() < start_time + duzina:
-    trenutno_vreme=time.time()
-    if(trenutno_vreme-prethodno_vreme>=interval):
-        prethodno_vreme=trenutno_vreme
+    #trenutno_vreme=time.time()
+    #if(trenutno_vreme-prethodno_vreme>=interval):
+      #  prethodno_vreme=trenutno_vreme
         enkoder.citaj_podatke(arduino)
         ugaona_brzina=enkoder.odredjivanje_ugaone_brzine()
         if ugaona_brzina is not None:
@@ -52,4 +53,3 @@ plt.plot(vreme_list,brzina_list)
 plt.plot(vreme_list,napon_list)
 plt.plot(vreme_list, zeljena_ugaona_brzina_list)
 plt.show() 
-
