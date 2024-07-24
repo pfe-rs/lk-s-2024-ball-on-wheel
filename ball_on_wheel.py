@@ -9,7 +9,7 @@ from matplotlib import pyplot as plt
 matplotlib.use('TkAgg')
 
 zeljena_ugaona_brzina=210
-zeljena_brzina2 = 350
+zeljena_brzina2 = 350 
 
 
 duzina = 40
