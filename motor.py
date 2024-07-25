@@ -1,16 +1,16 @@
 import serial
 import time
 
-arduino = serial.Serial('/dev/ttyACM1',115200)
+arduino = serial.Serial('/dev/ttyACM0',115200)
 
 class Motor:
     @staticmethod
     def salji_napon(napon,arduino):
-        if 0 <= napon <= 255:
-            arduino.write(f"{napon}\n".encode())
-            time.sleep(0.1)  # Allow some time for the Arduino to process
-            while arduino.in_waiting > 0:
-                arduino.readline()  # Clear the buffer
+        s = time.time()
+        napon=max(-254,min(255,napon))
+        arduino.write(f"{napon}\n".encode())
+        while arduino.in_waiting > 0:
+            arduino.readline()  # Clear the buffer
 
 
 if __name__=="__main__":

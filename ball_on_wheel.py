@@ -30,8 +30,6 @@ prethodno_vreme=time.time()
 arduino.write(b'start\n')
 
 while time.time() < start_time + duzina:
-    s = time.time()
-    
     trenutno_vreme=time.time()
     if(trenutno_vreme-prethodno_vreme>=interval):
         prethodno_vreme=trenutno_vreme
@@ -48,7 +46,6 @@ while time.time() < start_time + duzina:
             vreme_list.append(sad_time)
             napon_list.append(napon)
             zeljena_ugaona_brzina_list.append(zeljena_ugaona_brzina)
-    print(time.time()-s)
 
 plt.title("zavisnost brzine i napona od vremena")
 plt.xlabel("vreme")

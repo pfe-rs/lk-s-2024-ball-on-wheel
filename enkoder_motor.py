@@ -26,18 +26,18 @@ class Enkoder:
         self.napon=self.napon.strip('\r\n')
         return self.napon
 
+if __name__=="__main__":
+    time.sleep(1)
 
-time.sleep(1)
+    enkoder=Enkoder()    
+    napon=enkoder.citaj_napon(arduino)
+    print("napon= ",napon)
 
-enkoder=Enkoder()    
-napon=enkoder.citaj_napon(arduino)
-print("napon= ",napon)
-
-while True:
-    while (arduino.inWaiting()==0):
-        pass
-    enkoder.citaj_podatke(arduino)
-    ugao=enkoder.odredjivanje_ugla()
-    ugaona_brzina=enkoder.odredjivanje_ugaone_brzine()
-    print("ugao= ",enkoder.odredjivanje_ugla(), "ugaona brzina= ", enkoder.odredjivanje_ugaone_brzine())
+    while True:
+        while (arduino.inWaiting()==0):
+            pass
+        enkoder.citaj_podatke(arduino)
+        ugao=enkoder.odredjivanje_ugla()
+        ugaona_brzina=enkoder.odredjivanje_ugaone_brzine()
+        print("ugao= ",enkoder.odredjivanje_ugla(), "ugaona brzina= ", enkoder.odredjivanje_ugaone_brzine())
     
