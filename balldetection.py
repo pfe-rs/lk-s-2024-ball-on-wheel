@@ -16,7 +16,7 @@ class detekcija_loptice():
             self.koordinatni_pocetak = (x, y)
 
     def get_polozaj(self, frame):
-        roi = frame[roi_y:roi_y+roi_h, roi_x:roi_x+roi_w]
+        roi = frame[self.roi_y:self.roi_y+self.roi_h, self.roi_x:self.roi_x+self.roi_w]
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 

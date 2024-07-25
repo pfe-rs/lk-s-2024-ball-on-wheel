@@ -18,6 +18,9 @@ class Enkoder:
         dataPacket=str(dataPacket, 'utf-8')
         dataPacket=dataPacket.strip('\r\n')
         splitPacket=dataPacket.split(",")
+        if len(splitPacket) != 2:
+            print("nema 2broja")
+            return
         self.puls=int(splitPacket[0])  
         self.poz=int(splitPacket[1])
     def citaj_napon(self,arduino):

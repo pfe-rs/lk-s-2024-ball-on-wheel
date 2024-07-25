@@ -13,7 +13,7 @@ int x,pwmValue;
 
 void setup(){
   Serial.begin(115200);
-
+  Serial.setTimeout(50);
   pinMode(speedpin,OUTPUT);
   pinMode(directionpin1,OUTPUT);
   pinMode(directionpin2,OUTPUT);
