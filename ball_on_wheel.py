@@ -12,8 +12,8 @@ zeljena_ugaona_brzina=2000
 zeljena_brzina2 = 2500
 
 
-duzina = 30
-neko_vreme = 15
+duzina = 10
+neko_vreme = 5
 start_time = time.time()
 
 brzina_list = []
