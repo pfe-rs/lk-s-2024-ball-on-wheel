@@ -2,13 +2,21 @@ import cv2
 import numpy as np
 import math
 import time
-
+from filterpy.kalman import KalmanFilter
 
 class detekcija_loptice():
     def __init__ (self):
         self.koordinatni_pocetak = (0, 0)
         self.roi_x, self.roi_y, self.roi_w, self.roi_h = 100, 100, 200, 300
-        self.pre_angle = None
+        self.kf = KalmanFilter(dim_x=2, dim_z=1)
+        self.kf.x = np.array([0., 0.])  
+        self.kf.F = np.array([[1., 1.],
+                              [0., 1.]])  
+        self.kf.H = np.array([[1., 0.]])  
+        self.kf.P *= 1000.  
+        self.kf.R = 5 
+        self.kf.Q = np.array([[1., 0.],
+                              [0., 1.]]) 
         self.pre_time = None
 
     def click(self, event, x, y, flags, param):
@@ -16,7 +24,7 @@ class detekcija_loptice():
             self.koordinatni_pocetak = (x, y)
 
     def get_polozaj(self, frame):
-        roi = frame[roi_y:roi_y+roi_h, roi_x:roi_x+roi_w]
+        roi = frame[self.roi_y:self.roi_y+self.roi_h, self.roi_x:self.roi_x+self.roi_w]
 
         hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
 
@@ -43,16 +51,22 @@ class detekcija_loptice():
                     
                     curr_time = time.time()
 
-                    if self.pre_angle is not None and self.pre_time is not None:
-                        d_angle = angle - self.pre_angle
+                    if self.pre_time is not None:
                         d_time = curr_time - self.pre_time
-                        brzina_loptice = d_angle / d_time
-                    
+                        self.kf.F[0, 1] = d_time  
+                        self.kf.predict()
+                        self.kf.update(angle)
+                        brzina_loptice = self.kf.x[1]
                     else:
                         brzina_loptice = 0
 
-                    self.pre_angle = angle
                     self.pre_time = curr_time
+                    
+                    cv2.circle(frame, (x, y), r, (0, 255, 0), 2)
+                    cv2.circle(frame, (x, y), 2, (0, 255, 0), 3)
+                    
+                    cv2.putText(frame, f"Angle: {angle:.2f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                    cv2.putText(frame, f"Angular Speed: {brzina_loptice:.2f}", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
                    
                     return angle, brzina_loptice
         
@@ -78,6 +92,9 @@ if __name__ == "__main__":
         angle, brzina_loptice = bd.get_polozaj(frame)
         if angle is not None:
             print(angle, brzina_loptice)
+        
+        # Display the frame
+        cv2.imshow('Frame', frame)
 
         key = cv2.waitKey(1) & 0xFF
         if key == ord("q"):
