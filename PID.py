@@ -7,7 +7,7 @@ def Geterror(setpoint,speednow):
 
 
 def pid(error,dt):
-    kp=0.8
+    kp=10
     proportional = error
     #integral += error * dt
     #derivative = (error - previous) / dt

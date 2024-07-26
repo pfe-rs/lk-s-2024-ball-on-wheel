@@ -11,6 +11,8 @@ bool f=true;
 unsigned long puls, start_time=0;
 int x,pwmValue;
 
+//unsigned long current_time = 0, previous_time = 0, dt = 0;
+
 void setup(){
   Serial.begin(115200);
   Serial.setTimeout(50);
@@ -30,6 +32,7 @@ void setup(){
 }
 
 void loop(){
+ 
   if (Serial.available()) {
     int newPwmValue = Serial.parseInt();  // Read the PWM value sent from Python
     if (newPwmValue > -255 && newPwmValue <= 255 && newPwmValue!=0) {
@@ -56,6 +59,13 @@ void loop(){
   puls=2*pulseIn(2,HIGH);
   Serial.print(puls);
   Serial.print(",");
-  Serial.println(nova_pozicija); 
+  Serial.println(nova_pozicija);
+
+  //current_time = millis();
+  //dt = current_time - previous_time;
+  //previous_time = current_time;
+ 
+  
+ // Serial.println(dt);
   //  stara_pozicija=nova_pozicija;
 }

@@ -14,7 +14,7 @@ zeljena_ugaona_brzina=2000
 zeljena_brzina2 = 2500
 
 
-duzina = 5
+duzina = 15
 neko_vreme = 5
 start_time = time.time()
 
@@ -32,25 +32,26 @@ loptica=sakalmanovim.detekcija_loptice()
 cap=cv2.VideoCapture(0)
 #cv2.namedWindow('Frame')
 #cv2.setMouseCallback('Frame', loptica.click)
-#roi_x, roi_y, roi_w, roi_h = 100, 100, 200, 300
+roi_x, roi_y, roi_w, roi_h = 100, 100, 200, 300
 interval=0.01           #vremenski interval posle kog ce se izvrsiti fje
 prethodno_vreme=time.time()
 arduino.write(b'start\n')
 
 while time.time() < start_time + duzina:
-    s=time.time
     trenutno_vreme=time.time()
     if(trenutno_vreme-prethodno_vreme>=interval):
         prethodno_vreme=trenutno_vreme
-
+    
         ret, frame = cap.read()
-        """if not ret:
-            break"""
+        
+        if not ret:
+            break
         angle, brzina_loptice = loptica.get_polozaj(frame)
-        """cv2.imshow('Frame', frame)
-        key = cv2.waitKey(1) & 0xFF
-        if key == ord("q"):
-            break"""
+   
+        #cv2.imshow('Frame', frame)
+        #key = cv2.waitKey(1) & 0xFF
+        #if key == ord("q"):
+        #    break
         
         #angle controll
 
@@ -61,7 +62,10 @@ while time.time() < start_time + duzina:
         # if ugaona_brzina is not None:
         if time.time() > start_time + neko_vreme:
             zeljena_ugaona_brzina = zeljena_brzina2
-        greska=PID.Geterror(zeljena_ugaona_brzina,ugaona_brzina)
+        # greska=PID.Geterror(zeljena_ugaona_brzina,ugaona_brzina)
+        if angle is None:
+            angle = 0
+        greska=PID.Geterror(0,angle)
         napon=PID.pid(greska,0)
         motora.salji_napon(napon,arduino) 
         sad_time = time.time() - start_time
@@ -72,8 +76,8 @@ while time.time() < start_time + duzina:
         anglelist.append(angle)
 
 
-cap.release()
-cv2.destroyAllWindows()
+#cap.release()
+#cv2.destroyAllWindows()
 
 plt.title("zavisnost brzine i napona od vremena")
 plt.xlabel("vreme")

@@ -5,7 +5,7 @@ import time
 from filterpy.kalman import KalmanFilter
 class detekcija_loptice():
     def __init__ (self):
-        self.koordinatni_pocetak = (0, 0)
+        self.koordinatni_pocetak = (383, 449)
         self.roi_x, self.roi_y, self.roi_w, self.roi_h = 100, 100, 200, 300
         self.kf = KalmanFilter(dim_x=2, dim_z=1)
         self.kf.x = np.array([0., 0.])  
@@ -36,18 +36,19 @@ class detekcija_loptice():
         gray = cv2.cvtColor(blue_only, cv2.COLOR_BGR2GRAY)
         blurred = cv2.GaussianBlur(gray, (9, 9), 2)
         
-        s = time.time()
         circles = cv2.HoughCircles(blurred, cv2.HOUGH_GRADIENT, dp=1.2, minDist=100, param1=100, param2=30, minRadius=10, maxRadius=100)
-        print(time.time()-s)
+
         if circles is not None:
+
             circles = np.round(circles[0, :]).astype("int")
+      
             for (x, y, r) in circles:
                 if self.koordinatni_pocetak is not None:
                     koordinatni_pocetak_x, koordinatni_pocetak_y = self.koordinatni_pocetak
 
                     new_x = x - koordinatni_pocetak_x
                     new_y = koordinatni_pocetak_y - y
-                    angle = math.degrees(math.atan2(new_y, new_x))
+                    angle = math.degrees(math.atan2(new_y, new_x)) -90
                     
                     curr_time = time.time()
 
