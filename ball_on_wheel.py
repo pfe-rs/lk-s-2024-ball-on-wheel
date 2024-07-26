@@ -6,9 +6,35 @@ import PID
 import sakalmanovim
 import time 
 import matplotlib
+import threading
 
 from matplotlib import pyplot as plt
 matplotlib.use('TkAgg')
+
+def  get_polozajthread(frame):
+     angle, brzina_loptice = loptica.get_polozaj(frame)
+     return angle, brzina_loptice
+
+def speedcontrol(arduino,start_time,neko_vreme,zeljena_brzina2,angle):
+            enkoder.citaj_podatke(arduino)
+            ugaona_brzina=enkoder.odredjivanje_ugaone_brzine()
+            if ugaona_brzina is None:
+                ugaona_brzina = 0
+        # if ugaona_brzina is not None:
+            if time.time() > start_time + neko_vreme:
+                zeljena_ugaona_brzina = zeljena_brzina2
+        # greska=PID.Geterror(zeljena_ugaona_brzina,ugaona_brzina)
+            if angle is None:
+                angle = 0
+            greska=PID.Geterror(0,angle)
+            napon=PID.pid(greska,0)
+            motora.salji_napon(napon,arduino) 
+            sad_time = time.time() - start_time
+            brzina_list.append(ugaona_brzina)
+            vreme_list.append(sad_time)
+            napon_list.append(napon)
+            zeljena_ugaona_brzina_list.append(zeljena_ugaona_brzina)
+            anglelist.append(angle)
 
 zeljena_ugaona_brzina=2000
 zeljena_brzina2 = 2500
@@ -46,34 +72,26 @@ while time.time() < start_time + duzina:
         
         if not ret:
             break
-        angle, brzina_loptice = loptica.get_polozaj(frame)
-   
+
+        angle,brzina_loptice=thread1=threading.Thread(target=get_polozajthread,args=frame)
+        #angle, brzina_loptice = loptica.get_polozaj(frame)
+        
+
+        thread2=threading.Thread(target=speedcontrol,args=(arduino,start_time,neko_vreme,zeljena_brzina2,angle))
+
+        thread1.start()
+        thread2.start()
+
+
+        thread1.join()
+        thread2.join()
         #cv2.imshow('Frame', frame)
         #key = cv2.waitKey(1) & 0xFF
         #if key == ord("q"):
         #    break
         
         #angle controll
-
-        enkoder.citaj_podatke(arduino)
-        ugaona_brzina=enkoder.odredjivanje_ugaone_brzine()
-        if ugaona_brzina is None:
-            ugaona_brzina = 0
-        # if ugaona_brzina is not None:
-        if time.time() > start_time + neko_vreme:
-            zeljena_ugaona_brzina = zeljena_brzina2
-        # greska=PID.Geterror(zeljena_ugaona_brzina,ugaona_brzina)
-        if angle is None:
-            angle = 0
-        greska=PID.Geterror(0,angle)
-        napon=PID.pid(greska,0)
-        motora.salji_napon(napon,arduino) 
-        sad_time = time.time() - start_time
-        brzina_list.append(ugaona_brzina)
-        vreme_list.append(sad_time)
-        napon_list.append(napon)
-        zeljena_ugaona_brzina_list.append(zeljena_ugaona_brzina)
-        anglelist.append(angle)
+    
 
 
 #cap.release()
